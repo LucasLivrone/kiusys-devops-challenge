@@ -41,6 +41,7 @@ In order to accomplish this, I propose to design an application that has 2 endpo
 * The application will use **Python FastAPI** framework to serve the required endpoints and connect to the database.
   * The application code is located at [kiusys-app/kiusys_app.py](kiusys-app/kiusys_app.py)
 
+<br>
 
 * The challenge also requires that **Terraform** is used to provision all necessary cloud resources. I have decided to use Terraform with remote **S3 backends** since it offers several benefits:
   * Centralized State: Keeps Terraform state in a centralized location, reducing conflicts.
@@ -50,6 +51,7 @@ In order to accomplish this, I propose to design an application that has 2 endpo
   * Versioning: Allows versioning of the Terraform state for auditing and recovery.
     * Related code is located at [s3-backends](s3-backends)
 
+<br>
 
 * I decided to use a **DynamoDB** NoSQL database with a "key:value" structure where the key will be the flight number and the value the record of transactions. Using DynamoDB offers the following benefits:
   * Managed Service: AWS handles infrastructure, letting you focus on development.
@@ -60,6 +62,7 @@ In order to accomplish this, I propose to design an application that has 2 endpo
   * Security: Offers encryption at rest/in transit.
     * Related code is located at [dynamodb](dynamodb)
 
+<br>
 
 * The challenge requires that the application is deployed into a Kubernetes cluster to be easily and seamlessly scalable. I decided to use **AWS EKS (Elastic Kubernetes Service)** since it offers several benefits for deploying and managing Kubernetes clusters on AWS:
   * Managed Control Plane: AWS EKS handles the Kubernetes control plane, ensuring high availability and automatic update.
@@ -70,11 +73,13 @@ In order to accomplish this, I propose to design an application that has 2 endpo
   * Security: Integration with AWS IAM and native Kubernetes RBAC (Role-based access control) for secure access control.
     * Related code is located at [eks-cluster](eks-cluster)
 
-    
+<br>
+
 * Providing **High Availability**
   * The underlying VPC where the EKS cluster will run contains 3 Availability Zones with one public and private subnets.
     * Related code is located at [eks-cluster/vpc.tf](eks-cluster/vpc.tf)
 
+<br>
 
 * Providing **Scalability** and **Fault Tolerance**:
   * 2 worker node groups have been configured with specified minimum and maximum values. 
@@ -82,15 +87,18 @@ In order to accomplish this, I propose to design an application that has 2 endpo
   * A HorizontalPodAutoscaler (HPA) policy has been configured to automatically scale the number of running pods based on CPU utilization, providing a **LoadBalancer** at the same time.
     * Related code is located at [kubernetes/kiusys-app-hpa.yaml](kubernetes/kiusys-app-hpa.yaml)
 
+<br>
 
 * Providing **Security**:
   * The EKS worker nodes are given an IAM policy that enables them to only Query and AddItem into the flights-db
     * Related code is located at [eks-cluster/iam.tf](eks-cluster/iam.tf)
 
+<br>
 
 * I have used **Docker** alongside [kiusys-app/Dockerfile](kiusys-app/Dockerfile) to build and push the app Docker image into **AWS ECR (Elastic Container Registry)** since it can handle the availability, security and storage-scalability of the Docker images within AWS.
   * Related code is located at [ecr-repo](ecr-repo)
 
+<br>
 
 * In order to manage and deploy the application from ECR into the EKS cluster, I have decided to use **kubectl**.
   * Related kubernetes manifests are located at [kubernetes](kubernetes)
