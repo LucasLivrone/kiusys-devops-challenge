@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kiusys-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kiusys-app
+  template:
+    metadata:
+      labels:
+        app: kiusys-app
+    spec:
+      containers:
+      - name: kiusys-app
+        image: 935454340652.dkr.ecr.us-east-1.amazonaws.com/kiusys-app:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "500m"
